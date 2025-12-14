@@ -94,3 +94,46 @@ def export_csv(conn, filename):
         for r in rows:
             writer.writerow({"id": r[0], "name": r[1], "phone": r[2], "email": r[3]})
     print(f"Экспортировано в CSV: {filename}")
+def import_json(conn, filename):
+    path = Path(filename)
+    if not path.exists():
+        print("Файл не найден.")
+        return
+    with open(filename, "r", encoding="utf-8") as f:
+        contacts = json.load(f)
+
+    count = 0
+    for c in contacts:
+        name = c.get("name")
+        phone = c.get("phone")
+        email = c.get("email")
+        if not name or not phone:
+            continue
+        conn.execute(
+            "INSERT INTO contacts (name, phone, email) VALUES (?, ?, ?)",
+            (name, phone, email),
+        )
+        count += 1
+    conn.commit()
+    print(f"Импортировано из JSON: {count} контактов.")
+def import_csv(conn, filename):
+    path = Path(filename)
+    if not path.exists():
+        print("Файл не найден.")
+        return
+    count = 0
+    with open(filename, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            name = row.get("name")
+            phone = row.get("phone")
+            email = row.get("email")
+            if not name or not phone:
+                continue
+            conn.execute(
+                "INSERT INTO contacts (name, phone, email) VALUES (?, ?, ?)",
+                (name, phone, email),
+            )
+            count += 1
+    conn.commit()
+    print(f"Импортировано из CSV: {count} контактов.")
