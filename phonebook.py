@@ -137,3 +137,52 @@ def import_csv(conn, filename):
             count += 1
     conn.commit()
     print(f"Импортировано из CSV: {count} контактов.")
+def print_menu():
+    print("\n=== Телефонная книга ===")
+    print("1. Добавить контакт")
+    print("2. Показать все контакты")
+    print("3. Редактировать контакт")
+    print("4. Удалить контакт")
+    print("5. Экспорт в JSON")
+    print("6. Экспорт в CSV")
+    print("7. Импорт из JSON")
+    print("8. Импорт из CSV")
+    print("0. Выход")
+
+def main():
+    conn = get_connection()
+    try:
+        while True:
+            print_menu()
+            choice = input("Выберите пункт меню: ").strip()
+
+            if choice == "1":
+                add_contact(conn)
+            elif choice == "2":
+                list_contacts(conn)
+            elif choice == "3":
+                edit_contact(conn)
+            elif choice == "4":
+                delete_contact(conn)
+            elif choice == "5":
+                filename = input("Имя файла JSON: ").strip() or "contacts.json"
+                export_json(conn, filename)
+            elif choice == "6":
+                filename = input("Имя файла CSV: ").strip() or "contacts.csv"
+                export_csv(conn, filename)
+            elif choice == "7":
+                filename = input("Имя файла JSON: ").strip() or "contacts.json"
+                import_json(conn, filename)
+            elif choice == "8":
+                filename = input("Имя файла CSV: ").strip() or "contacts.csv"
+                import_csv(conn, filename)
+            elif choice == "0":
+                print("Выход.")
+                break
+            else:
+                print("Неверный выбор, попробуйте снова.")
+    finally:
+        conn.close()
+
+if __name__ == "__main__":
+    main()
