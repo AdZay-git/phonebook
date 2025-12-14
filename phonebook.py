@@ -75,3 +75,22 @@ def delete_contact(conn):
     conn.execute("DELETE FROM contacts WHERE id = ?", (cid,))
     conn.commit()
     print("Контакт удалён (если существовал).")
+def export_json(conn, filename):
+    cur = conn.execute("SELECT id, name, phone, email FROM contacts")
+    rows = cur.fetchall()
+    contacts = [
+        {"id": r[0], "name": r[1], "phone": r[2], "email": r[3]}
+        for r in rows
+    ]
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(contacts, f, ensure_ascii=False, indent=2)
+    print(f"Экспортировано в JSON: {filename}")
+def export_csv(conn, filename):
+    cur = conn.execute("SELECT id, name, phone, email FROM contacts")
+    rows = cur.fetchall()
+    with open(filename, "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["id", "name", "phone", "email"])
+        writer.writeheader()
+        for r in rows:
+            writer.writerow({"id": r[0], "name": r[1], "phone": r[2], "email": r[3]})
+    print(f"Экспортировано в CSV: {filename}")
