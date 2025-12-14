@@ -1,0 +1,14 @@
+# SQLite database files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Виртуальное окружение, если есть
+venv/
+.env/
+
+# Прочие служебные файлы IDE (по желанию)
+.idea/
+.vscode/
+__pycache__/
